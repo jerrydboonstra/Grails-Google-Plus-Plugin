@@ -1,0 +1,5 @@
+*.iml
+*.zip
+*.zip.sha1
+plugin.xml
+target/

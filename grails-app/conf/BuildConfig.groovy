@@ -6,6 +6,16 @@ grails.project.target.level = 1.6
 
 grails.plugin.repos.distribution.myRepo ="https://github.com/IntelliGrape/Grails-Google-Plus-Plugin.git"
 
+// use 'grails maven-deploy' to deploy plugins to the FreqRepo maven2 repository:
+grails.project.repos.FreqRepo.url = "http://jira.frequency.com/maven2/repo"
+grails.project.dependency.distribution = {
+    localRepository = "/var/www/maven2/repo"
+    remoteRepository(id: "FreqRepo", url: "scp://jira.frequency.com/var/www/maven2/repo") {
+        authentication username: "root", privateKey: "${userHome}/.ssh/id_rsa-frequency"
+    }
+}
+grails.project.repos.default = "FreqRepo"
+
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
