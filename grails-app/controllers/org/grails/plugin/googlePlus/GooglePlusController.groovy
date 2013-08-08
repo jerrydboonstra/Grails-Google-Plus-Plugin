@@ -7,11 +7,24 @@ class GooglePlusController {
     def accessTokenService
     def googlePlusService
 
-    def callback = {
-        String accessToken = accessTokenService.generateAccessToken(params.code)
+    def callback = { AuthenticationCallbackCommand cmd ->
+        def (accessToken, refreshToken, expiresIn) = accessTokenService.generateAccessToken(cmd.code)
         googlePlusService.accessToken = accessToken
         String callbackAction = ConfigurationHolder.config.grails.plugins.googlePlus.callbackAction
         String callbackController = ConfigurationHolder.config.grails.plugins.googlePlus.callbackController
-        redirect(controller: callbackController , action: callbackAction , params: [accessToken: accessToken])
+        redirect(controller: callbackController , action: callbackAction,
+                params: [accessToken: accessToken, refreshToken: refreshToken, expiresIn: expiresIn, state: cmd.state, error: cmd.error])
+    }
+}
+
+class AuthenticationCallbackCommand {
+    String code
+    String state
+    String error
+
+    static constraints = {
+        code(nullable:false)
+        state(nullable:true)
+        error(nullable:true)
     }
 }

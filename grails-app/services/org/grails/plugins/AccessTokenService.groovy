@@ -7,26 +7,43 @@ class AccessTokenService {
     private final String URL_TO_REQUEST_TOKEN = 'https://accounts.google.com/o/oauth2/token'
     static transactional = false
 
-    String generateAccessToken(String code) {
-        String queryString = generateQueryString(code)
-        String accessToken
+    def generateAccessToken(String code) {
+        String queryString = generateAccessTokenQueryString(code)
+        String accessToken = null
+        String refreshToken = null
+        String expiresIn = null
         try {
             HttpURLConnection connection = loadConnectionSettings(queryString.size())
             postAccessTokenRequest(connection, queryString)
-            accessToken = extractAccessToken(connection)
+            (accessToken, refreshToken, expiresIn) = extractData(connection)
         }
         catch (Exception e) {
             e.printStackTrace()
         }
-       return  accessToken
+        return [accessToken, refreshToken, expiresIn]
     }
 
-    private String extractAccessToken(HttpURLConnection connection) {
-        String accessToken
+    def refreshAccessToken(String refreshToken) {
+        String queryString = generateRefreshAccessTokenQueryString(refreshToken)
+        String accessToken = null
+        String expiresIn = null
+        try {
+            HttpURLConnection connection = loadConnectionSettings(queryString.size())
+            postAccessTokenRequest(connection, queryString)
+            (accessToken, expiresIn) = extractData(connection)
+        }
+        catch (Exception e) {
+            e.printStackTrace()
+        }
+        return [accessToken, expiresIn]
+    }
+    private def extractData(HttpURLConnection connection) {
         String resultData = connection.content.text
         def responseJson = JSON.parse(resultData)
-        accessToken = responseJson?.access_token
-        return accessToken
+        String accessToken = responseJson?.access_token
+        String refreshToken = responseJson?.refresh_token
+        Integer expiresIn = responseJson?.expires_in
+        return [accessToken, refreshToken, expiresIn]
     }
 
     private postAccessTokenRequest(HttpURLConnection connection, String queryString) {
@@ -47,7 +64,27 @@ class AccessTokenService {
         return connection
     }
 
-    private String generateQueryString(String code) {
+    private String generateAccessTokenQueryString(String code) {
+        String clientId = ConfigurationHolder.config.grails.plugins.googlePlus.clientId
+        String clientSecret = ConfigurationHolder.config.grails.plugins.googlePlus.clientSecret
+        String callBackUrl = ConfigurationHolder.config.grails.plugins.googlePlus.callBackUrl
+
+        StringBuilder queryString = new StringBuilder("code=")
+        queryString.with{
+            append(code);
+            append("&client_id=");
+            append(encodeInUTF8(clientId));
+            append("&client_secret=");
+            append(encodeInUTF8(clientSecret));
+            append("&redirect_uri=");
+            append(encodeInUTF8(callBackUrl));
+            append("&grant_type=");
+            append(encodeInUTF8('authorization_code'))
+        }
+        return queryString.toString()
+    }
+
+    private String generateRefreshAccessTokenQueryString(String code) {
         String clientId = ConfigurationHolder.config.grails.plugins.googlePlus.clientId
         String clientSecret = ConfigurationHolder.config.grails.plugins.googlePlus.clientSecret
         String callBackUrl = ConfigurationHolder.config.grails.plugins.googlePlus.callBackUrl
