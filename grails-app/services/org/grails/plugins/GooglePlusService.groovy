@@ -11,21 +11,20 @@ class GooglePlusService {
 
     private static final googleProfileUrl = "https://www.googleapis.com/oauth2/v1/userinfo"
     private static final String BASE_URL = "https://www.googleapis.com/plus/"
-    public String accessToken
 
     public AccessTokenData getAccessToken() {
-        AccessTokenData accessTokenData = new AccessTokenData(accessToken: accessToken)
-        return accessTokenData
+        return new AccessTokenData(accessToken: accessToken)
     }
 
     public String getAuthorizationUrl() {
         GooglePlusUtil.authorizationUrl
     }
 
-    public Person getCurrentUserProfile() {
-        Person person
+    public Person getUserProfile(String accessToken) {
+        if (accessToken) return null
+        Person person = null
         try {
-            URL url = new URL("https://www.googleapis.com/plus/v1/people/me?access_token=${this.accessToken}")
+            URL url = new URL("https://www.googleapis.com/plus/v1/people/me?access_token=${accessToken}")
             def jsonString = JSON.parse(url?.text)
             println "URL : " + url.toString()
             println "JSON : " + jsonString
