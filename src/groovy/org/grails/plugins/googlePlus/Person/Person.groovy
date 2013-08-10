@@ -36,8 +36,11 @@ class Person {
         person.image = image
         Name name = new Name()
         name.familyName = json?.name?.familyName
-        name.givenName = json?.given_name
-        name.middleName = json?.name?.givenName
+        name.givenName = json?.name?.givenName
+        name.middleName = json?.name?.middleName
+        name.formatted = json?.name?.formatted
+        name.honorificPrefix = json?.name?.hororificPrefix
+        name.honorificSuffix = json?.name?.hororificSuffix
         person.name = name
         return person
     }

@@ -10,7 +10,6 @@ class GooglePlusException extends RuntimeException {
         result = [:]
     }
 
-
     public GooglePlusException(result) {
         super(result['error'] ? result['error']['message'] : result['error_msg'])
         this.result = result
