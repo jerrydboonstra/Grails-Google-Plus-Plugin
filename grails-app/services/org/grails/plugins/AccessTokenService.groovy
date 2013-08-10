@@ -39,7 +39,7 @@ class AccessTokenService {
     }
     private def extractData(HttpURLConnection connection) {
         String resultData = connection.content.text
-        def responseJson = JSON.parse(resultData)
+        def responseJson = JSON.parse(resultData) as Map
         String accessToken = responseJson?.access_token
         String refreshToken = responseJson?.refresh_token
         Integer expiresIn = responseJson?.expires_in

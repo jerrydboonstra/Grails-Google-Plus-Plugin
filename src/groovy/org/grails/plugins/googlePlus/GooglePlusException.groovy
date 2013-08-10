@@ -10,8 +10,14 @@ class GooglePlusException extends RuntimeException {
         result = [:]
     }
 
+    /**
+     * eg. { "error": { "errors": [
+     * { "domain": "global", "reason": "authError", "message": "Invalid Credentials", "locationType": "header",
+     * "location": "Authorization" } ], "code": 401, "message": "Invalid Credentials" } }
+     * @param result
+     */
     public GooglePlusException(result) {
-        super(result['error'] ? result['error']['message'] : result['error_msg'])
+        super(result['error'] ? result['error']['message'] as String : result['error_msg'] as String)
         this.result = result
     }
 
@@ -20,9 +26,13 @@ class GooglePlusException extends RuntimeException {
         return (result['error'] && result['error']['type']) ? result['error']['type'] : 'Exception'
     }
 
+    public Integer getCode() {
+        return result['code'] as Integer ?: null
+    }
+
 
     public String toString() {
-        return getType() + ': ' + getMessage()
+        return "${type}: ${message}; status=${code}"
     }
 }
 

@@ -7,7 +7,7 @@ class GooglePlusUtil {
     static String getAuthorizationUrl() {
         String clientId = ConfigurationHolder.config.grails.plugins.googlePlus.clientId
         String callbackUrl = ConfigurationHolder.config.grails.plugins.googlePlus.callBackUrl
-        String scope = ConfigurationHolder.config.grails.plugins.googlePlus.scope ?: 'https://www.googleapis.com/auth/plus.me'
+        String scope = ConfigurationHolder.config.grails.plugins.googlePlus.scope ?: 'https://www.googleapis.com/auth/plus.me email'
         String accessType = ConfigurationHolder.config.grails.plugins.googlePlus.accessType ?: 'offline'
         def requiredParams = [:]
         requiredParams.put 'scope', scope
