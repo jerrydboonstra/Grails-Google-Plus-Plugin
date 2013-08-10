@@ -22,7 +22,7 @@ class GooglePlusService {
     }
 
     public Person getUserProfile(String accessToken) throws GooglePlusException {
-        if (accessToken) return null
+        if (!accessToken) return null
         URL url = new URL("${BASE_URL}/v1/people/me?access_token=${accessToken}")
         def json = JSON.parse(url?.text)
         log.info "URL : " + url.toString()
@@ -35,7 +35,7 @@ class GooglePlusService {
     }
 
     public String getUserEmail(String accessToken) throws GooglePlusException {
-        if (accessToken) return null
+        if (!accessToken) return null
         URL url = new URL("${googleProfileUrl}?access_token=${accessToken}")
         def json= JSON.parse(url?.text) as Map
         log.info "URL : " + url.toString()
