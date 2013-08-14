@@ -10,7 +10,7 @@ class ValidatedEmail {
     Boolean email_verified
     String domain
 
-    static ValidatedEmail parseJSONForValidatedEmail(def json) {
+    static ValidatedEmail parseJSON(def json) {
         ValidatedEmail userinfo = new ValidatedEmail()
         userinfo.id = json?.sub
         userinfo.email = json?.email

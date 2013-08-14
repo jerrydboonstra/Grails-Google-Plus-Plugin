@@ -23,7 +23,7 @@ class Person {
     List<LanguageSpoken> languagesSpoken = []
 
 
-    static Person parseJSONForPerson(def json) {
+    static Person parseJSON(def json) {
         Person person = new Person()
         person.id = json?.id
         person.displayName = json?.displayName

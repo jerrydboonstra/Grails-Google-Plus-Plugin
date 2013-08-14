@@ -6,19 +6,28 @@ class GoogleUserInfoException extends RuntimeException {
 
     def result
 
-    public GoogleUserInfoException() {
-        result = [:]
-    }
-
     /**
-     * eg. { "error": "invalid_token", "error_description": "Invalid Credentials" }
+     * eg. '{ "error": "invalid_token", "error_description": "Invalid Credentials" }'
      * @param result
      */
-    public GoogleUserInfoException(result) {
-        super(result['error_description'] ? "${result['error']}: ${result['error_descxription']}" as String : result['error'] as String)
+    public GoogleUserInfoException(Map result) {
+        super(parseData(result))
         this.result = result
     }
 
+    public GoogleUserInfoException(Map data, Throwable ex) {
+        super(parseData(data), ex)
+    }
+
+    public GoogleUserInfoException(String data, Throwable ex) {
+        super(data, ex)
+    }
+
+    String parseData(Map result) {
+        def msg = result['error_description'] ? "${result['error']}: ${result['error_description']}" as String : result['error'] as String
+        this.result = msg
+        return this.result
+    }
 }
 
 
